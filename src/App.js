@@ -1,6 +1,5 @@
 
-import react, {Component} from 'react';
-import './App.css';
+import React, {Component} from 'react';
 import Navigation from './components/Navigation/Navigation';
 import Logo from './components/Logo/Logo';
 import ImageLinkForm from './components/ImageLinkForm/ImageLinkForm';
@@ -10,6 +9,9 @@ import Particles from "react-tsparticles";
 import FaceRecogntion from './components/FaceRecognition/FaceRecognition'
 import SignIn from './components/SignIn/SignIn';
 import Register from './components/Register/Register';
+import Modal from './components/Modal/Modal';
+import Profile from './components/profile/Profile';
+import './App.css';
 
 
 
@@ -17,8 +19,9 @@ const intialState = {
     input: '',
     imageUrl: '',
     boxes: [],
-    route: 'home',
-    isSignedIn: true,
+    route: 'signin',
+    isSignedIn: false,
+    isPofileOpen: false,
     user: {
       id: '',
       name: '',
@@ -121,8 +124,14 @@ onRouteChange = (route) => {
   }
   this.setState({route: route});
 }
+toggleModal = () =>{
+  this.setState(prevState => ({
+    ...prevState,
+    isPofileOpen: !prevState.isPofileOpen
+  }))
+}
   render() {
-   const {isSignedIn, imageUrl, route, boxes} = this.state
+   const {isSignedIn, imageUrl, route, boxes, isPofileOpen} = this.state
     return (
   <Fragment>
     <div className="App">
@@ -200,11 +209,16 @@ onRouteChange = (route) => {
           },
           detectRetina: true,
         }}/>
-      <Navigation isSignedIn={isSignedIn} onRouteChange={this.onRouteChange}/>
-      
+      <Navigation isSignedIn={isSignedIn} onRouteChange={this.onRouteChange}
+      toggleModal={this.toggleModal}/>
+     {/* && shorthand for ternary with one true */}
+      {isPofileOpen && <Modal>
+         <Profile isPofileOpen={isPofileOpen} toggleModal={this.toggleModal}/>
+       </Modal>}     
       { route === 'home' 
        ?<div>
        <Logo />
+ 
        <Rank name={this.state.user.name} entries={this.state.user.entries}/>
       <ImageLinkForm  onInputChange={this.onInputChange} onButtonSubmit={this.onButtonSubmit}/>
        <FaceRecogntion boxes={boxes} imageUrl={imageUrl}/>
