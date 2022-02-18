@@ -114,7 +114,7 @@ onButtonSubmit = () => {
 
 onRouteChange = (route) => {
   if (route === 'signout'){
-    this.setState(intialState)
+    return this.setState(intialState)
   }
   else if (route === 'home'){
     this.setState({isSignedIn: true})
