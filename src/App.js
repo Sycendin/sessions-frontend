@@ -28,7 +28,9 @@ const intialState = {
       password: '',
       email: '',
       entries: 0,
-      joined: ''
+      joined: '',
+      color: '',
+      age: ''
     }
 }
 
@@ -131,7 +133,7 @@ toggleModal = () =>{
   }))
 }
   render() {
-   const {isSignedIn, imageUrl, route, boxes, isPofileOpen} = this.state
+   const {isSignedIn, imageUrl, route, boxes, isPofileOpen, user} = this.state
     return (
   <Fragment>
     <div className="App">
@@ -213,7 +215,8 @@ toggleModal = () =>{
       toggleModal={this.toggleModal}/>
      {/* && shorthand for ternary with one true */}
       {isPofileOpen && <Modal>
-         <Profile isPofileOpen={isPofileOpen} toggleModal={this.toggleModal}/>
+         <Profile isPofileOpen={isPofileOpen} toggleModal={this.toggleModal} loadUser={this.loadUser}
+         user={user}/>
        </Modal>}     
       { route === 'home' 
        ?<div>
