@@ -39,12 +39,39 @@ class App extends Component {
     super()
     this.state = intialState
 }
-//backend test
-// componentDidMount(){
-//   fetch('http://localhost:3001/')
-//   .then(response => response.json())
-//   .then(console.log)
-// }
+
+componentDidMount(){
+  const token = window.sessionStorage.getItem('token')
+  if (token){
+    fetch('http://localhost:3002/signin' , {
+      method: 'post',
+      headers: {
+        'content-Type': 'application/json',
+        'Authorization': token
+      }
+    })
+    .then(resp => resp.json())
+    .then(data => {
+      if (data && data.id){
+        fetch(`http://localhost:3002/profile/${data.id}` , {
+          method: 'get',
+          headers: {
+            'content-Type': 'application/json',
+            'Authorization': token
+          }
+        })
+        .then(response => response.json())
+        .then(user => {
+          if (user && user.email){
+            this.loadUser(user)
+            this.onRouteChange('home')
+          }
+        })
+      }
+    })
+    .catch(console.log)
+  }
+}
 loadUser =(data)=>{
 this.setState({ user:
   {

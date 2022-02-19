@@ -16,6 +16,10 @@ class SignIn extends React.Component {
     onPasswordChange = (event) =>{
         this.setState({SignInPassword: event.target.value})
     }
+    saveAuthTokenInSession = (token) => {
+        // set token to sessionstorage in browswer
+        window.sessionStorage.setItem('token', token)
+    }
     onSubmitSignIn = () =>{
         // fetch('https://obscure-forest-18294.herokuapp.com/signin', {
             fetch('http://localhost:3002/signin', {    
@@ -27,14 +31,28 @@ class SignIn extends React.Component {
             })
         })
             .then(response => response.json())
-            .then(user =>{
-                if (user.id){
-                    this.props.loadUser(user)
-                    this.props.onRouteChange('home');
+            .then(data =>{
+                // Return userId from session creation
+                if (data.userId && data.success === 'true'){
+                    this.saveAuthTokenInSession(data.token)
+
+                    fetch(`http://localhost:3002/profile/${data.userId}` , {
+                            method: 'get',
+                            headers: {
+                            'content-Type': 'application/json',
+                            'Authorization': data.token
+                            }
+                        })
+                        .then(response => response.json())
+                        .then(user => {
+                            if (user && user.email){
+                            this.props.loadUser(user)
+                            this.props.onRouteChange('home')
+                            }
+                        })
+                        .catch(console.log)
                 }
             })
-        // get email and password submitted
-        // console.log(this.state);
         
     }
     render() {
