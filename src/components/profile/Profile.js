@@ -31,12 +31,16 @@ class  Profile extends React.Component {
         fetch(`http://localhost:3002/profile/${this.props.user.id}`,
         {
             method: 'post',
-            headers: {'Content-Type': 'application/json'},
+            headers: {'content-Type': 'application/json', 
+            'Authorization': window.sessionStorage.getItem('token')},
             body: JSON.stringify({formInput: data})
         })
         .then(response => {
-            this.props.toggleModal();
-            this.props.loadUser({...this.props.user, ...data})
+            if(response.status === 200 || response.status === 304){
+                this.props.toggleModal();
+                this.props.loadUser({...this.props.user, ...data})
+            }
+
         })
         .catch(console.log)
     }

@@ -84,6 +84,7 @@ this.setState({ user:
 }})
 }
 calculateFaceLocations = (data)  => {
+  if (data && data.outputs){
   return data.outputs[0].data.regions.map(face=>{
     const clarifaFace = face.region_info.bounding_box;
     const image = document.getElementById('inputImage');
@@ -96,13 +97,16 @@ calculateFaceLocations = (data)  => {
       bottomRow: height - (clarifaFace.bottom_row * height)
     }
   })
-
+  }
+  return;
 }
 
 
 displayFaceBoxes = (boxes) => {
-
-  this.setState({boxes: boxes})
+   if (boxes){
+    this.setState({boxes: boxes})
+   }
+  
 }
 onInputChange = (event) =>{
   this.setState({input: event.target.value})
@@ -115,7 +119,8 @@ onButtonSubmit = () => {
   // fetch('https://obscure-forest-18294.herokuapp.com/imageurl', {
     fetch('http://localhost:3002/imageurl', {  
     method: 'post',
-    headers: {'content-Type': 'application/json'},
+    headers: {'content-Type': 'application/json', 
+    'Authorization': window.sessionStorage.getItem('token')},
     body: JSON.stringify({
       input: this.state.input
     })
@@ -127,7 +132,8 @@ onButtonSubmit = () => {
       // fetch('https://obscure-forest-18294.herokuapp.com/image', {
         fetch('http://localhost:3002/image', {  
         method: 'put',
-        headers: {'content-Type': 'application/json'},
+        headers: {'content-Type': 'application/json', 
+        'Authorization': window.sessionStorage.getItem('token')},
         body: JSON.stringify({
           id: this.state.user.id
       })
